@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.16)
 
 project(PomodoroClock VERSION 0.1 LANGUAGES CXX)
 
@@ -12,23 +12,25 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+set(CMAKE_AUTOUIC_SEARCH_PATHS
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui
+)
+
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+    src/main.cpp
+    src/mainwindow.cpp
+    src/countdowntimer.cpp
+    src/pomodoroclock.cpp
+    include/mainwindow.h
+    include/countdowntimer.h
+    include/pomodoroclock.h
+    ui/mainwindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(PomodoroClock
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        pomodoroclock.cpp
-        countdowntimer.cpp
-        pomodoroclock.h
-        countdowntimer.h
-
-
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET PomodoroClock APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -47,6 +49,10 @@ else()
         )
     endif()
 endif()
+
+target_include_directories(PomodoroClock PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 target_link_libraries(PomodoroClock PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
